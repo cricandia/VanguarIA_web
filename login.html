@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VanguardIA: Iniciar Sesión</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Tailwind Colors (Matching main site's sober purple/green palette) */
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #fcfaf8; /* Base background for light sections */
+        }
+        .text-v-dark { color: #1A202C; } /* Dark text on light backgrounds */
+        .text-v-accent-green { color: #34D399; } /* Vibrant Emerald Green for accent */
+        .bg-purple-950 { background-color: #2A004C; } /* Very dark purple */
+        .bg-purple-900 { background-color: #5A005F; } /* Deep purple */
+        .bg-emerald-400 { background-color: #34D399; } /* Vibrant Emerald Green */
+        .hover\:bg-emerald-500:hover { background-color: #10B981; } /* Darker Emerald for hover */
+        .bg-purple-50 { background-color: #FAFAFF; } /* Very light purple for subtle sections */
+        .border-purple-100 { border-color: #F3E8FF; } /* Light purple border */
+        .shadow-custom-lg { box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.15), 0 5px 10px -5px rgba(0, 0, 0, 0.08); }
+
+        /* Login button color (orange for contrast, matching main site) */
+        .bg-v-login-btn { background-color: #FF8C00; } /* Dark Orange / Amber */
+        .hover\:bg-v-login-btn-dark:hover { background-color: #CC7000; } /* Darker Orange for hover */
+
+        /* New color for Internal Access button */
+        .bg-internal-access-btn { background-color: #059669; } /* Deeper Emerald/Green */
+        .hover\:bg-internal-access-btn-dark:hover { background-color: #047857; } /* Even Darker Emerald for hover */
+
+
+        /* Message Box and Overlay */
+        .message-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            z-index: 1000;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+            max-width: 90%;
+        }
+        .message-box.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+        .overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body class="text-v-dark">
+
+    <header class="bg-purple-900/90 backdrop-blur-md shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-5 flex justify-between items-center">
+            <a href="index.html" class="flex items-center">
+                <img src="images/Logo/7.png" alt="VanguardIA Logo" class="h-16 mr-3 rounded-md" onerror="this.onerror=null;this.src='https://placehold.co/160x64/5A005F/34D399?text=VanguardIA+Logo';">
+            </a>
+            <a href="index.html" class="px-6 py-3 bg-emerald-400 text-purple-950 text-lg font-bold rounded-xl shadow-custom-lg hover:bg-emerald-500 transition transform hover:-translate-y-1">Volver al Inicio</a>
+        </nav>
+    </header>
+
+    <main class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-950 to-emerald-950 py-10 md:py-20">
+        <div class="container mx-auto px-6 max-w-5xl">
+            <h1 class="text-center text-4xl md:text-5xl font-extrabold text-white mb-12">Iniciar Sesión en VanguardIA</h1>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <!-- Internal User Login Section -->
+                <div class="bg-white p-10 rounded-2xl shadow-custom-lg flex flex-col items-center">
+                    <h2 class="text-3xl font-bold text-v-dark mb-6">Usuarios Internos</h2>
+                    <p class="text-gray-700 text-lg text-center mb-8">Accede a las herramientas de gestión y recursos exclusivos para el equipo de VanguardIA.</p>
+                    <form id="internal-login-form" class="w-full">
+                        <div class="mb-6">
+                            <label for="internal-username" class="block text-gray-700 text-sm font-bold mb-2">Usuario</label>
+                            <input type="text" id="internal-username" class="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent" placeholder="Tu usuario interno">
+                        </div>
+                        <div class="mb-8">
+                            <label for="internal-password" class="block text-gray-700 text-sm font-bold mb-2">Contraseña</label>
+                            <input type="password" id="internal-password" class="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent" placeholder="Tu contraseña">
+                        </div>
+                        <button type="submit" class="w-full bg-internal-access-btn hover:bg-internal-access-btn-dark text-white font-bold py-4 px-6 rounded-xl shadow-custom-lg focus:outline-none focus:shadow-outline transition transform hover:-translate-y-1 text-lg">
+                            Acceder
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Subscriber Login Section -->
+                <div class="bg-white p-10 rounded-2xl shadow-custom-lg flex flex-col items-center">
+                    <h2 class="text-3xl font-bold text-v-dark mb-6">Suscriptores y Clientes</h2>
+                    <p class="text-gray-700 text-lg text-center mb-8">Ingresa para acceder a tus capacitaciones, materiales exclusivos y el seguimiento de tu asesoría.</p>
+                    <form id="subscriber-login-form" class="w-full">
+                        <div class="mb-6">
+                            <label for="subscriber-email" class="block text-gray-700 text-sm font-bold mb-2">Correo Electrónico</label>
+                            <input type="email" id="subscriber-email" class="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent" placeholder="tu.correo@ejemplo.com">
+                        </div>
+                        <div class="mb-8">
+                            <label for="subscriber-password" class="block text-gray-700 text-sm font-bold mb-2">Contraseña</label>
+                            <input type="password" id="subscriber-password" class="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent" placeholder="Tu contraseña">
+                        </div>
+                        <button type="submit" class="w-full bg-v-login-btn hover:bg-v-login-btn-dark text-white font-bold py-4 px-6 rounded-xl shadow-custom-lg focus:outline-none focus:shadow-outline transition transform hover:-translate-y-1 text-lg">
+                            Ingresar
+                        </button>
+                        <p class="mt-6 text-center text-gray-600 text-sm">¿Olvidaste tu contraseña? <a href="#" class="text-emerald-400 hover:underline">Recuperar</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-purple-900 text-white py-10">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-lg font-semibold mb-2">&copy; 2025 VanguardIA.</p>
+            <p class="text-sm text-purple-200">Todos los derechos reservados. Tu Pyme, siempre un paso adelante.</p>
+        </div>
+    </footer>
+
+    <!-- Message Box and Overlay -->
+    <div id="messageBox" class="message-box hidden">
+        <p class="text-xl font-bold mb-4 text-v-dark">Mensaje de Prueba</p>
+        <p class="text-gray-700 mb-6">Esta es una simulación de inicio de sesión.</p>
+        <button id="closeMessageBox" class="px-6 py-2 bg-emerald-400 text-purple-950 rounded-lg hover:bg-emerald-500 transition">Cerrar</button>
+    </div>
+    <div id="overlay" class="overlay hidden"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const messageBox = document.getElementById('messageBox');
+        const closeMessageBoxButton = document.getElementById('closeMessageBox');
+        const overlay = document.getElementById('overlay');
+
+        function showMessageBox(message) {
+            messageBox.querySelector('p:nth-child(2)').textContent = message;
+            messageBox.classList.add('show');
+            overlay.classList.add('show');
+        }
+
+        function hideMessageBox() {
+            messageBox.classList.remove('show');
+            overlay.classList.remove('show');
+        }
+
+        closeMessageBoxButton.addEventListener('click', hideMessageBox);
+        overlay.addEventListener('click', hideMessageBox);
+
+        // Internal Login Form Handler
+        const internalLoginForm = document.getElementById('internal-login-form');
+        internalLoginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('internal-username').value;
+            const password = document.getElementById('internal-password').value;
+            console.log('Intento de inicio de sesión interno:', { username, password });
+            showMessageBox('Inicio de sesión interno simulado para el usuario: ' + username + '. Funcionalidad en desarrollo.');
+            internalLoginForm.reset();
+        });
+
+        // Subscriber Login Form Handler
+        const subscriberLoginForm = document.getElementById('subscriber-login-form');
+        subscriberLoginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('subscriber-email').value;
+            const password = document.getElementById('subscriber-password').value;
+            console.log('Intento de inicio de sesión de suscriptor:', { email, password });
+            showMessageBox('Inicio de sesión de suscriptor simulado para: ' + email + '. Acceso a capacitaciones en desarrollo.');
+            subscriberLoginForm.reset();
+        });
+    });
+</script>

@@ -382,7 +382,7 @@
 
     <footer class="bg-purple-900 text-white py-10">
         <div class="container mx-auto px-6 text-center">
-            <p class="text-lg font-semibold mb-2">&copy; 2024 VanguardIA.</p>
+            <p class="text-lg font-semibold mb-2">&copy; 2025 VanguardIA.</p>
             <p class="text-sm text-purple-200">Todos los derechos reservados. Tu Pyme, siempre un paso adelante.</p>
         </div>
     </footer>
@@ -477,17 +477,18 @@
             overlay.classList.remove('show');
         }
 
+        closeMessageBoxButton.addEventListener('click', hideMessageBox);
+        overlay.addEventListener('click', hideMessageBox); // Close when clicking outside message box
+
+        // MODIFICACIÓN: Redireccionar a login.html al hacer clic en el botón de Iniciar Sesión
         loginButton.addEventListener('click', () => {
-            showMessageBox('La sección de inicio de sesión para suscriptores estará disponible pronto. ¡Gracias por tu interés en VanguardIA!');
+            window.location.href = 'login.html';
         });
 
         mobileLoginButton.addEventListener('click', () => {
-             mobileMenu.classList.add('hidden'); // Hide mobile menu when login is clicked
-             showMessageBox('La sección de inicio de sesión para suscriptores estará disponible pronto. ¡Gracias por tu interés en VanguardIA!');
+            mobileMenu.classList.add('hidden'); // Hide mobile menu when login is clicked
+            window.location.href = 'login.html';
         });
-
-        closeMessageBoxButton.addEventListener('click', hideMessageBox);
-        overlay.addEventListener('click', hideMessageBox); // Close when clicking outside message box
     });
 </script>
 </body>
