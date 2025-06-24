@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VanguardIA: Tu Pyme, Siempre un Paso Adelante</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif; /* Changed font to Outfit */
+            background-color: #fcfaf8; /* Base background for light sections */
+        }
+        /* Custom Tailwind Colors */
+        .text-v-dark { color: #0F172A; } /* Slate-900 equivalent for headings/dark text */
+        .text-v-accent { color: #00FFFF; } /* Vibrant Cyan */
+        .bg-v-dark { background-color: #0F172A; }
+        .bg-v-accent { background-color: #00FFFF; }
+        .hover\:bg-v-accent-dark:hover { background-color: #00BFFF; } /* Slightly darker cyan for hover */
+        .bg-v-light { background-color: #F8FAFC; } /* Subtle light background */
+        .border-v-light { border-color: #E2E8F0; }
+        .shadow-custom-lg { box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.15), 0 5px 10px -5px rgba(0, 0, 0, 0.08); }
+
+        /* New color for Login button */
+        .bg-v-login-btn { background-color: #FF8C00; } /* Dark Orange / Amber */
+        .hover\:bg-v-login-btn-dark:hover { background-color: #CC7000; } /* Darker Orange for hover */
+
+        /* Animations */
+        @keyframes pulse-slow {
+            0%, 100% { transform: scale(1); opacity: 0.05; }
+            50% { transform: scale(1.1); opacity: 0.1; }
+        }
+        .animate-pulse-slow { animation: pulse-slow 6s infinite ease-in-out; }
+
+        @keyframes fadeInMoveUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up { animation: fadeInMoveUp 0.8s ease-out forwards; }
+
+        .toggle-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+        }
+        .toggle-content.expanded {
+            max-height: 300px; /* Adjust as needed for more content */
+            transition: max-height 0.8s ease-in;
+        }
+
+        /* Message Box and Overlay */
+        .message-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            z-index: 1000;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+        .message-box.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+        .overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body class="text-dark-gray">
+
+    <header class="bg-blue-100/90 backdrop-blur-md shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-5 flex justify-between items-center">
+            <a href="#hero" class="flex items-center">
+                <img src="/images/Logo/5.png" alt="VanguardIA Logo" class="h-16 mr-3 rounded-md" onerror="this.onerror=null;this.src='https://placehold.co/160x64/E0F2FE/0F172A?text=VanguardIA+Logo';">
+            </a>
+            <div class="hidden md:flex items-center space-x-10">
+                <a href="#lo-que-hacemos" class="text-gray-700 text-lg font-medium hover:text-v-accent transition-colors duration-300">Lo que Hacemos</a>
+                <a href="#capacitacion" class="text-gray-700 text-lg font-medium hover:text-v-accent transition-colors duration-300">Capacitación</a>
+                <a href="#beneficios" class="text-gray-700 text-lg font-medium hover:text-v-accent transition-colors duration-300">Beneficios</a>
+                <a href="#nuestro-enfoque" class="text-gray-700 text-lg font-medium hover:text-v-accent transition-colors duration-300">Nuestro Enfoque</a>
+                <a href="#clientes" class="text-gray-700 text-lg font-medium hover:text-v-accent transition-colors duration-300">Casos de Éxito</a>
+                <a href="#contacto" class="px-6 py-3 bg-v-accent text-v-dark text-lg font-bold rounded-xl shadow-custom-lg hover:bg-v-accent-dark transition transform hover:-translate-y-1">Contáctanos</a>
+                <button id="login-button" class="px-6 py-3 bg-v-login-btn text-white text-lg font-bold rounded-xl shadow-custom-lg hover:bg-v-login-btn-dark transition transform hover:-translate-y-1">Iniciar Sesión</button>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-gray-700 focus:outline-none">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-blue-100 py-4 shadow-inner">
+            <a href="#lo-que-hacemos" class="block px-8 py-3 text-lg text-gray-700 hover:bg-blue-200 transition">Lo que Hacemos</a>
+            <a href="#capacitacion" class="block px-8 py-3 text-lg text-gray-700 hover:bg-blue-200 transition">Capacitación</a>
+            <a href="#beneficios" class="block px-8 py-3  text-lg text-gray-700 hover:bg-blue-200 transition">Beneficios</a>
+            <a href="#nuestro-enfoque" class="block px-8 py-3 text-lg text-gray-700 hover:bg-blue-200 transition">Nuestro Enfoque</a>
+            <a href="#clientes" class="block px-8 py-3 text-lg text-gray-700 hover:bg-blue-200 transition">Casos de Éxito</a>
+            <a href="#contacto" class="block px-8 py-3 text-lg text-v-accent font-semibold hover:bg-blue-200 transition">Contáctanos</a>
+            <button id="mobile-login-button" class="block w-full text-left px-8 py-3 text-lg bg-v-login-btn text-white rounded-md shadow-lg hover:bg-v-login-btn-dark transition">Iniciar Sesión</button>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero" class="py-32 md:py-48 bg-gradient-to-br from-slate-900 to-blue-950 text-center relative overflow-hidden">
+            <!-- Dynamic AI/Network background shapes -->
+            <div class="absolute top-0 left-0 w-80 h-80 bg-v-accent opacity-5 rounded-full blur-3xl -ml-40 -mt-40 animate-pulse-slow"></div>
+            <div class="absolute bottom-0 right-0 w-96 h-96 bg-v-accent opacity-5 rounded-full blur-3xl -mr-48 -mb-48 animate-pulse-slow delay-500"></div>
+            <div class="absolute inset-0 z-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' viewBox=\'0 0 40 40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23a0aec0\' fill-opacity=\'0.2\' fill-rule=\'evenodd\'%3E%3Cpath d=\'M0 40L40 0H20L0 20V40zm0-20L20 0H0v20zm20 20L40 20V0h-20L20 20zm20 0L20 40H40V20z\'/%3E%3C/g%3E%3C/svg%3E'); background-size: 40px 40px;"></div>
+
+
+            <div class="container mx-auto px-6 max-w-5xl relative z-10">
+                <h1 class="text-6xl md:text-8xl font-extrabold text-white leading-tight mb-8 animate-fade-in-up">
+                    <span class="block text-v-accent">VanguardIA:</span> Tu Pyme, siempre un paso adelante.
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-300 mb-16 max-w-3xl mx-auto animate-fade-in-up delay-200">
+                    Transformamos la complejidad de las compras públicas en tu próxima gran oportunidad. Con <strong>inteligencia estratégica</strong> y nuestra <strong>vanguardia tecnológica</strong>, tu Pyme está lista para liderar el mercado.
+                </p>
+                <a href="#contacto" class="px-12 py-6 bg-v-accent text-v-dark text-xl font-bold rounded-xl shadow-custom-lg hover:bg-v-accent-dark transition transform hover:-translate-y-2 animate-fade-in-up delay-400">
+                    Impulsa tu Pyme Hoy
+                </a>
+            </div>
+        </section>
+
+        <section id="logos-option" class="py-20 bg-v-light">
+            <div class="container mx-auto px-6 text-center max-w-5xl">
+                <h2 class="text-4xl md:text-5xl font-bold text-v-dark mb-12">Nuestras Identidades Visuales</h2>
+                <p class="text-xl text-gray-700 mb-16 max-w-3xl mx-auto">
+                    Explora las representaciones de nuestra marca: un símbolo de crecimiento y conexión inteligente para tu Pyme.
+                </p>
+                <div class="flex flex-col md:flex-row justify-center items-center gap-12 md:gap-24">
+                    <div class="flex flex-col items-center p-8 bg-white rounded-2xl shadow-xl border border-v-light transform hover:scale-105 transition-transform duration-300">
+                        <img src="/images/Logo/1.png" alt="VanguardIA Logo Principal" class="max-h-36 w-auto rounded-md mb-6">
+                        <p class="text-gray-800 text-lg font-semibold">VanguardIA (Principal)</p>
+                    </div>
+                    <div class="flex flex-col items-center p-8 bg-white rounded-2xl shadow-xl border border-v-light transform hover:scale-105 transition-transform duration-300">
+                        <img src="/images/Logo/2.png" alt="VAIA Logo Alternativo" class="max-h-36 w-auto rounded-md mb-6">
+                        <p class="text-gray-800 text-lg font-semibold">VAIA (Abreviatura Oficial)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="lo-que-hacemos" class="py-20 bg-gradient-to-br from-white to-gray-50">
+            <div class="container mx-auto px-6 text-center max-w-6xl">
+                <h2 class="text-4xl md:text-5xl font-bold text-v-dark mb-10">Lo que Hacemos por Tu Pyme</h2>
+                <p class="text-xl text-gray-700 mb-16 max-w-3xl mx-auto">
+                    En VanguardIA, te equipamos con la estrategia y el conocimiento para navegar y conquistar el mercado público chileno. No solo te preparamos, te posicionamos para ganar.
+                </p>
+
+                <div class="grid md:grid-cols-3 gap-12">
+                    <div class="bg-white p-10 rounded-3xl shadow-xl border border-v-light flex flex-col items-center text-center transform hover:-translate-y-2 transition-transform duration-300">
+                        <div class="text-6xl mb-6 text-v-accent">🤝</div>
+                        <h3 class="text-2xl font-extrabold text-v-dark mb-4">Estrategia de Alianzas (UTPs)</h3>
+                        <p class="text-lg text-gray-700 mb-6 flex-grow">
+                            Te guiamos en la <strong>formación estratégica de Uniones Temporales de Proveedores (UTPs)</strong> para que tu Pyme pueda acceder a licitaciones de mayor envergadura en el sistema público.
+                        </p>
+                        <div class="toggle-content text-base text-gray-700 text-left w-full space-y-3 pt-6 border-t border-v-light">
+                            <p>✔️ Identificamos socios complementarios y estratégicos.</p>
+                            <p>✔️ Facilitamos la estructura legal y operativa de la unión.</p>
+                            <p>✔️ Amplificamos tu capacidad para competir y ganar.</p>
+                        </div>
+                        <button class="toggle-button text-v-accent font-bold text-lg mt-6 hover:underline">Saber más →</button>
+                    </div>
+
+                    <div class="bg-white p-10 rounded-3xl shadow-xl border border-v-light flex flex-col items-center text-center transform hover:-translate-y-2 transition-transform duration-300">
+                        <div class="text-6xl mb-6 text-v-accent">✨</div>
+                        <h3 class="text-2xl font-extrabold text-v-dark mb-4">Ventaja Competitiva Inclusiva</h3>
+                        <p class="text-lg text-gray-700 mb-6 flex-grow">
+                            Te ayudamos a <strong>capitalizar criterios de evaluación inclusivos</strong>, convirtiendo tu compromiso social en una <strong>ventaja competitiva</strong> significativa para ganar licitaciones.
+                        </p>
+                        <div class="toggle-content text-base text-gray-700 text-left w-full space-y-3 pt-6 border-t border-v-light">
+                            <p>✔️ Asesoría en identificación y documentación de prácticas inclusivas.</p>
+                            <p>✔️ Estrategias para destacar tu impacto social en la postulación.</p>
+                            <p>✔️ Diferenciación para obtener puntajes adicionales y asegurar adjudicaciones.</p>
+                        </div>
+                        <button class="toggle-button text-v-accent font-bold text-lg mt-6 hover:underline">Saber más →</button>
+                    </div>
+
+                    <div class="bg-white p-10 rounded-3xl shadow-xl border border-v-light flex flex-col items-center text-center transform hover:-translate-y-2 transition-transform duration-300">
+                        <div class="text-6xl mb-6 text-v-accent">💡</div>
+                        <h3 class="text-2xl font-extrabold text-v-dark mb-4">Capacitación y Networking</h3>
+                        <p class="text-lg text-gray-700 mb-6 flex-grow">
+                            Generamos <strong>espacios de encuentro y capacitación (ferias y talleres)</strong> para conectar a tu Pyme con nuevas oportunidades, redes de contacto y el conocimiento clave para el éxito.
+                        </p>
+                        <div class="toggle-content text-base text-gray-700 text-left w-full space-y-3 pt-6 border-t border-v-light">
+                            <p>✔️ Talleres prácticos sobre la nueva Ley de Compras y mejores prácticas.</p>
+                            <p>✔️ Participación en ferias para visibilizar tu Pyme y generar nuevas alianzas.</p>
+                            <p>✔️ Acceso a una comunidad de Pymes con intereses comunes.</p>
+                        </div>
+                        <button class="toggle-button text-primary-blue font-bold text-lg mt-6 hover:underline">Saber más →</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="capacitacion" class="py-20 bg-v-dark text-white">
+            <div class="container mx-auto px-6 text-center max-w-6xl">
+                <h2 class="text-4xl md:text-5xl font-bold mb-10 text-v-accent">Capacitación Inteligente: Domina el Mercado</h2>
+                <p class="text-xl text-gray-300 mb-12 max-w-3xl mx-auto">
+                    Nuestros programas de capacitación están diseñados para brindarte el conocimiento y las herramientas más avanzadas. Desde los fundamentos hasta la estrategia de vanguardia, te preparamos para el éxito.
+                </p>
+                <div class="grid md:grid-cols-2 gap-10">
+                    <div class="bg-white p-10 rounded-3xl shadow-xl text-dark-gray flex flex-col transform hover:-translate-y-2 transition-transform duration-300">
+                        <div class="text-6xl mb-6 text-v-accent">🎓</div>
+                        <h3 class="text-2xl font-extrabold mb-4">Fundamentos y Estrategias Clave</h3>
+                        <p class="text-lg mb-6 flex-grow">
+                            Aprende todos los pasos iniciales para operar en Mercado Público y dominar las licitaciones. Te enseñamos a pensar como un estratega en el entorno de las compras públicas.
+                        </p>
+                        <ul class="text-base text-gray-700 text-left space-y-2">
+                            <li>✔️ <strong>Inscripción y Habilitación en Mercado Público (ChileProveedores).</strong></li>
+                            <li>✔️ <strong>Primeros pasos para acceder y buscar licitaciones relevantes.</strong></li>
+                            <li>✔️ Interpretación avanzada de bases de licitación.</li>
+                            <li>✔️ Estrategias de precios y ofertas competitivas.</li>
+                            <li>✔️ Negociación y cierre de contratos.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-10 rounded-3xl shadow-xl text-dark-gray flex flex-col transform hover:-translate-y-2 transition-transform duration-300">
+                        <div class="text-6xl mb-6 text-v-accent">🤖</div>
+                        <h3 class="text-2xl font-extrabold mb-4">Tecnología y Datos al Servicio</h3>
+                        <p class="text-lg mb-6 flex-grow">
+                            Te equipamos para utilizar herramientas digitales y entender el poder de los datos en el proceso de licitación. Descubre cómo la <strong>inteligencia artificial</strong> puede optimizar tu búsqueda y análisis de oportunidades.
+                        </p>
+                        <ul class="text-base text-gray-700 text-left space-y-2">
+                            <li>✔️ Uso de plataformas digitales de compras públicas para la búsqueda y postulación.</li>
+                            <li>✔️ Análisis de datos de mercado para la toma de decisiones.</li>
+                            <li>✔️ Principios básicos de automatización de procesos.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="mt-16">
+                     <p class="text-xl mb-6">¿Quieres conocer nuestro próximo calendario de talleres?</p>
+                     <a href="#contacto" class="px-10 py-5 bg-v-accent text-v-dark text-xl font-bold rounded-xl shadow-custom-lg hover:bg-v-accent-dark transition transform hover:-translate-y-1">
+                        Ver Cursos Próximos
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="beneficios" class="py-20 bg-gradient-to-br from-white to-gray-50">
+            <div class="container mx-auto px-6 text-center max-w-5xl">
+                <h2 class="text-4xl md:text-5xl font-bold text-v-dark mb-10">Beneficios Inmediatos para Tu Pyme</h2>
+                <p class="text-xl text-gray-700 mb-16 max-w-3xl mx-auto">
+                    Trabajar con VanguardIA significa abrir un mundo de posibilidades. Tu Pyme no solo participa, sino que prospera en el dinámico ecosistema de las compras públicas.
+                </p>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10 text-left">
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-v-light">
+                        <div class="text-4xl text-v-accent mb-4">⭐</div>
+                        <h3 class="font-extrabold text-xl mb-3">Acceso a Grandes Contratos</h3>
+                        <p class="text-gray-700 text-base">Supera las limitaciones de tamaño y accede a licitaciones que antes eran inalcanzables, gracias a la estrategia de asociatividad.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-v-light">
+                        <div class="text-4xl text-v-accent mb-4">📈</div>
+                        <h3 class="font-extrabold text-xl mb-3">Crecimiento Sostenible</h3>
+                        <p class="text-gray-700 text-base">Diversifica tus clientes y asegura un flujo constante de ingresos a través del mercado más grande de Chile.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-v-light">
+                        <div class="text-4xl text-v-accent mb-4">🏆</div>
+                        <h3 class="font-extrabold text-xl mb-3">Ventaja Competitiva Única</h3>
+                        <p class="text-gray-700 text-base">Diferénciate al incorporar criterios de inclusión y maximiza tus puntajes en las evaluaciones.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-v-light">
+                        <div class="text-4xl text-v-accent mb-4">🛠️</div>
+                        <h3 class="font-extrabold text-xl mb-3">Proceso Simplificado</h3>
+                        <p class="text-gray-700 text-base">Reduce la burocracia y el estrés. Te guiamos paso a paso, haciendo el camino más fácil y eficiente.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-v-light">
+                        <div class="text-4xl text-v-accent mb-4">🛡️</div>
+                        <h3 class="font-extrabold text-xl mb-3">Seguridad y Confianza</h3>
+                        <p class="text-gray-700 text-base">Opera con el respaldo de expertos que conocen la nueva ley a fondo y te protegen de errores comunes.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-v-light">
+                        <div class="text-4xl text-v-accent mb-4">🤝</div>
+                        <h3 class="font-extrabold text-xl mb-3">Comunidad y Alianzas</h3>
+                        <p class="text-gray-700 text-base">Accede a una red de MiPymes y oportunidades de colaboración que fortalecen tu negocio.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="nuestro-enfoque" class="py-20">
+            <div class="container mx-auto px-6 text-center max-w-5xl">
+                <h2 class="text-4xl md:text-5xl font-bold text-v-dark mb-10">Nuestro Enfoque: Estrategia Inteligente para el Éxito</h2>
+                <p class="text-xl text-gray-700 mb-16 max-w-3xl mx-auto">
+                    En VanguardIA, nuestra metodología se basa en la inteligencia estratégica y la aplicación práctica. No ofrecemos soluciones genéricas, sino un camino claro y adaptado a la realidad de tu Pyme.
+                </p>
+
+                <div class="grid md:grid-cols-3 gap-10">
+                    <div class="flex flex-col items-center bg-white p-8 rounded-2xl shadow-sm border border-v-light">
+                        <div class="text-6xl text-v-accent mb-6">🎯</div>
+                        <h3 class="font-extrabold text-xl mb-3">Diagnóstico Preciso</h3>
+                        <p class="text-gray-700 text-base">Analizamos el potencial de tu Pyme y las oportunidades más relevantes en el mercado público, con un enfoque basado en datos y experiencia.</p>
+                    </div>
+                    <div class="flex flex-col items-center bg-white p-8 rounded-2xl shadow-sm border border-v-light">
+                        <div class="text-6xl text-v-accent mb-6">🗺️</div>
+                        <h3 class="font-extrabold text-xl mb-3">Estrategia a Medida</h3>
+                        <p class="text-gray-700 text-base">Diseñamos un plan de acción único para cada Pyme, maximizando sus fortalezas y mitigando riesgos específicos de las licitaciones.</p>
+                    </div>
+                    <div class="flex flex-col items-center bg-white p-8 rounded-2xl shadow-sm border border-v-light">
+                        <div class="text-6xl text-v-accent mb-6">🚀</div>
+                        <h3 class="font-extrabold text-xl mb-3">Ejecución y Acompañamiento</h3>
+                        <p class="text-gray-700 text-base">Te acompañamos en cada fase, desde la preparación de documentos hasta la post-adjudicación, asegurando una implementación efectiva.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="clientes" class="py-20 bg-gradient-to-br from-white to-gray-50">
+            <div class="container mx-auto px-6 text-center max-w-5xl">
+                <h2 class="text-4xl md:text-5xl font-bold text-v-dark mb-10">Casos de Éxito y Testimonios</h2>
+                <p class="text-xl text-gray-700 mb-16 max-w-3xl mx-auto">
+                    La mejor prueba de nuestro valor son los resultados de nuestros clientes. Pymes como la tuya ya están cosechando el éxito en el sistema público chileno.
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-10 text-left">
+                    <div class="bg-white p-10 rounded-2xl shadow-xl border border-v-light">
+                        <p class="text-gray-800 italic text-lg mb-6 leading-relaxed">
+                            "Gracias a VanguardIA, nuestra microempresa pudo formar una UTP y adjudicarse un contrato que nunca hubiéramos imaginado solos. Su asesoría es invaluable y su enfoque inteligente nos dio una ventaja clara."
+                        </p>
+                        <p class="font-bold text-v-dark text-lg">- María P., Gerente de Constructora Biobío Limitada</p>
+                    </div>
+                    <div class="bg-white p-10 rounded-2xl shadow-xl border border-v-light">
+                        <p class="text-gray-800 italic text-lg mb-6 leading-relaxed">
+                            "Conocíamos la ley, pero no cómo aplicarla para nuestra ventaja. VanguardIA nos dio la estrategia precisa y nos ayudó a destacar con criterios inclusivos. ¡Totalmente recomendados y un paso adelante!"
+                        </p>
+                        <p class="font-bold text-v-dark text-lg">- Juan S., Dueño de Soluciones Tecnológicas del Sur</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contacto" class="py-20 bg-v-accent text-v-dark">
+            <div class="container mx-auto px-6 text-center max-w-3xl">
+                <h2 class="text-4xl md:text-5xl font-bold mb-10">¿Listo para que tu Pyme dé el siguiente paso?</h2>
+                <p class="text-xl mb-12">
+                    Contáctanos hoy mismo y descubre cómo VanguardIA puede transformar tu participación en las licitaciones públicas, posicionándote a la vanguardia del mercado.
+                </p>
+                <form class="bg-white p-10 rounded-2xl shadow-custom-lg text-dark-gray">
+                    <div class="mb-6 text-left">
+                        <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Nombre Completo</label>
+                        <input type="text" id="name" class="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-v-accent focus:border-transparent" placeholder="Tu Nombre">
+                    </div>
+                    <div class="mb-6 text-left">
+                        <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Correo Electrónico</label>
+                        <input type="email" id="email" class="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-v-accent focus:border-transparent" placeholder="tu.correo@ejemplo.com">
+                    </div>
+                     <div class="mb-6 text-left">
+                        <label for="phone" class="block text-gray-700 text-sm font-bold mb-2">Número de Teléfono</label>
+                        <input type="tel" id="phone" class="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-v-accent focus:border-transparent" placeholder="+56 9 XXXXXXXX">
+                    </div>
+                    <div class="mb-8 text-left">
+                        <label for="message" class="block text-gray-700 text-sm font-bold mb-2">Mensaje (¿Cómo podemos ayudarte?)</label>
+                        <textarea id="message" rows="6" class="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-v-accent focus:border-transparent" placeholder="Cuéntanos sobre tu Pyme y tus intereses en licitaciones..."></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-v-dark hover:opacity-90 text-v-accent font-bold py-4 px-6 rounded-xl focus:outline-none focus:shadow-outline transition transform hover:-translate-y-1 text-lg">
+                        Enviar Consulta
+                    </button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-v-dark text-white py-10">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-lg font-semibold mb-2">&copy; 2024 VanguardIA.</p>
+            <p class="text-sm text-gray-400">Todos los derechos reservados. Tu Pyme, siempre un paso adelante.</p>
+        </div>
+    </footer>
+
+    <div id="messageBox" class="message-box hidden">
+        <p class="text-xl font-bold mb-4">Funcionalidad en Desarrollo</p>
+        <p class="text-gray-700 mb-6">La sección de inicio de sesión para suscriptores estará disponible pronto. ¡Gracias por tu interés en VanguardIA!</p>
+        <button id="closeMessageBox" class="px-6 py-2 bg-v-accent text-v-dark rounded-lg hover:bg-v-accent-dark transition">Cerrar</button>
+    </div>
+    <div id="overlay" class="overlay hidden"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Mobile Menu Toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    const headerOffset = document.querySelector('header').offsetHeight;
+                    const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                    const offsetPosition = elementPosition - headerOffset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Toggle content for service cards
+        const toggleButtons = document.querySelectorAll('.toggle-button');
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const content = button.previousElementSibling;
+                content.classList.toggle('expanded');
+                if (content.classList.contains('expanded')) {
+                    button.textContent = 'Saber menos ←';
+                } else {
+                    button.textContent = 'Saber más →';
+                }
+            });
+        });
+
+        // Simple form submission (for demonstration, no backend)
+        const contactForm = document.querySelector('#contacto form');
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // In a real application, you would send this data to a server
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const message = document.getElementById('message').value;
+
+            console.log('Formulario enviado:', { name, email, phone, message });
+
+            showMessageBox('¡Gracias por tu consulta, ' + name + '! Nos pondremos en contacto contigo pronto.');
+            contactForm.reset();
+        });
+
+        // Login Button and Message Box functionality
+        const loginButton = document.getElementById('login-button');
+        const mobileLoginButton = document.getElementById('mobile-login-button');
+        const messageBox = document.getElementById('messageBox');
+        const closeMessageBoxButton = document.getElementById('closeMessageBox');
+        const overlay = document.getElementById('overlay');
+
+        function showMessageBox(message) {
+            messageBox.querySelector('p:nth-child(2)').textContent = message; // Update message content
+            messageBox.classList.add('show');
+            overlay.classList.add('show');
+        }
+
+        function hideMessageBox() {
+            messageBox.classList.remove('show');
+            overlay.classList.remove('show');
+        }
+
+        loginButton.addEventListener('click', () => {
+            showMessageBox('La sección de inicio de sesión para suscriptores estará disponible pronto. ¡Gracias por tu interés en VanguardIA!');
+        });
+
+        mobileLoginButton.addEventListener('click', () => {
+             mobileMenu.classList.add('hidden'); // Hide mobile menu when login is clicked
+             showMessageBox('La sección de inicio de sesión para suscriptores estará disponible pronto. ¡Gracias por tu interés en VanguardIA!');
+        });
+
+        closeMessageBoxButton.addEventListener('click', hideMessageBox);
+        overlay.addEventListener('click', hideMessageBox); // Close when clicking outside message box
+    });
+</script>
+</body>
+</html>
