@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VanguardIA: CRM Interno</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Tailwind Colors (Matching main site's sober purple/green palette from login.html) */
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #fcfaf8; /* Base background for light sections */
+        }
+        .text-v-dark { color: #1A202C; } /* Dark text on light backgrounds */
+        .text-v-accent-green { color: #34D399; } /* Vibrant Emerald Green for accent */
+        .bg-purple-950 { background-color: #2A004C; } /* Very dark purple */
+        .bg-purple-900 { background-color: #5A005F; } /* Deep purple */
+        .bg-purple-800 { background-color: #7B007F; } /* Medium purple */
+        .bg-purple-700 { background-color: #9C009F; } /* Lighter purple */
+        .bg-v-light { background-color: #F8F4F0; } /* Light background for sections */
+        .border-v-dark { border-color: #1A202C; }
+        .border-v-accent-green { border-color: #34D399; }
+        .bg-emerald-400 { background-color: #34D399; } /* Vibrant Emerald Green */
+        .hover\:bg-emerald-500:hover { background-color: #10B981; } /* Darker Emerald for hover */
+        .shadow-custom-lg { box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.15), 0 5px 10px -5px rgba(0, 0, 0, 0.08); }
+
+        /* Custom styles for message box - copied from login.html */
+        .message-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            z-index: 1000;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+            max-width: 90%;
+        }
+        .message-box.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+        .overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body class="bg-v-light text-v-dark">
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Message Box -->
+    <div id="messageBox" class="message-box">
+        <h3 class="text-xl font-bold text-v-dark mb-4">Mensaje del Sistema</h3>
+        <p class="text-v-dark mb-6"></p>
+        <button id="closeMessageBox" class="px-6 py-3 bg-v-accent-green text-white font-semibold rounded-lg hover:bg-emerald-600 transition duration-300">Cerrar</button>
+    </div>
+
+    <!-- Navegación Superior - Adaptada de login.html header -->
+    <header class="bg-purple-900/90 backdrop-blur-md shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-5 flex justify-between items-center">
+            <a href="index.html" class="flex items-center">
+                <!-- Usando un placeholder similar al de index.html si no hay imagen específica para el logo en el CRM -->
+                <img src="images/Logo/7.png" alt="VanguardIA Logo" class="h-16 mr-3 rounded-md" onerror="this.onerror=null;this.src='https://placehold.co/160x64/5A005F/34D399?text=VanguardIA+Logo';">
+            </a>
+            <div class="flex items-center space-x-4">
+                <span class="text-white text-lg font-semibold">Bienvenido, Usuario Interno</span>
+                <button id="logout-button" class="px-6 py-3 bg-emerald-400 text-purple-950 text-lg font-bold rounded-xl shadow-custom-lg hover:bg-emerald-500 transition transform hover:-translate-y-1">Cerrar Sesión</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Contenido Principal del CRM -->
+    <main class="container mx-auto p-6 mt-8">
+        <h2 class="text-4xl md:text-5xl font-extrabold text-purple-950 mb-8 text-center">Dashboard de Asesorías</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-10">
+            <!-- Panel de Resumen de Asesorías -->
+            <div class="bg-white p-8 rounded-2xl shadow-custom-lg">
+                <h3 class="text-2xl font-bold text-v-dark mb-5">Resumen de Asesorías Activas</h3>
+                <ul class="space-y-3 text-gray-700 text-lg">
+                    <li class="flex justify-between items-center"><span>Asesorías en Progreso:</span> <span class="font-bold text-purple-950">12</span></li>
+                    <li class="flex justify-between items-center"><span>Asesorías Pendientes:</span> <span class="font-bold text-v-accent-green">5</span></li>
+                    <li class="flex justify-between items-center"><span>Asesorías Completadas (este mes):</span> <span class="font-bold text-purple-950">3</span></li>
+                    <li class="flex justify-between items-center"><span>Asesorías en Espera de Feedback:</span> <span class="font-bold text-v-accent-green">2</span></li>
+                </ul>
+            </div>
+
+            <!-- Widgets de Seguimiento por Licitación -->
+            <div class="bg-white p-8 rounded-2xl shadow-custom-lg">
+                <h3 class="text-2xl font-bold text-v-dark mb-5">Seguimiento por Licitación</h3>
+                <ul class="space-y-3 text-gray-700 text-lg">
+                    <li><span class="font-semibold">Licitación #12345:</span> <span class="text-v-accent-green">En Propuesta</span> - Próximo Hito: Envío (15/07)</li>
+                    <li><span class="font-semibold">Licitación #67890:</span> <span class="text-purple-950">Adjudicada</span> - Contrato en Revisión</li>
+                    <li><span class="font-semibold">Licitación #11223:</span> <span class="text-gray-500">Pendiente</span> - Contacto Inicial</li>
+                </ul>
+                <button class="mt-6 w-full px-6 py-3 bg-purple-900 text-white font-semibold rounded-xl hover:bg-purple-800 transition duration-300 transform hover:-translate-y-1">Ver Todas las Licitaciones</button>
+            </div>
+
+            <!-- Recomendaciones de Licitaciones -->
+            <div class="bg-white p-8 rounded-2xl shadow-custom-lg">
+                <h3 class="text-2xl font-bold text-v-dark mb-5">Licitaciones Recomendadas</h3>
+                <ul class="space-y-3 text-gray-700 text-lg">
+                    <li><span class="font-semibold">Cliente "MiPyme Innova":</span> Servicios TI (Criterio Inclusivo)</li>
+                    <li><span class="font-semibold">Cliente "Construye Fácil":</span> Obra Menor (Compra Ágil)</li>
+                    <li><span class="font-semibold">Cliente "Agro Futuro":</span> Suministro Agrícola (UTP Potencial)</li>
+                </ul>
+                <button class="mt-6 w-full px-6 py-3 bg-v-accent-green text-white font-semibold rounded-xl hover:bg-emerald-600 transition duration-300 transform hover:-translate-y-1">Generar Más Recomendaciones</button>
+            </div>
+        </div>
+
+        <!-- Sección de Acciones Rápidas / Botones Principales -->
+        <div class="flex flex-col md:flex-row justify-center items-center gap-6 mt-12">
+            <button id="manage-trainings-button" class="px-10 py-5 bg-purple-950 text-white font-bold text-xl rounded-2xl shadow-custom-lg hover:bg-purple-900 transition duration-300 transform hover:scale-105">
+                Gestionar Contenido de Capacitaciones
+            </button>
+            <button id="manage-clients-button" class="px-10 py-5 bg-v-accent-green text-white font-bold text-xl rounded-2xl shadow-custom-lg hover:bg-emerald-600 transition duration-300 transform hover:scale-105">
+                Gestionar Clientes y Leads
+            </button>
+        </div>
+
+        <!-- Sección de retroalimentación al cliente -->
+        <div class="bg-white p-8 rounded-2xl shadow-custom-lg mt-12">
+            <h3 class="text-2xl font-bold text-v-dark mb-5">Retroalimentación Reciente a Clientes</h3>
+            <div class="space-y-5 text-gray-700 text-lg">
+                <div class="border-b border-gray-200 pb-4">
+                    <p><span class="font-semibold">Cliente "TecnoSoluciones":</span> Actualización de progreso en Licitación MINEDUC. Hito de propuesta completado.</p>
+                    <span class="text-sm text-gray-500">Enviado: 08/07/2025</span>
+                </div>
+                <div class="border-b border-gray-200 pb-4">
+                    <p><span class="font-semibold">Cliente "Servicios Logísticos SA":</span> Informe de análisis de riesgo para licitación de transporte.</p>
+                    <span class="text-sm text-gray-500">Enviado: 07/07/2025</span>
+                </div>
+                <div>
+                    <p><span class="font-semibold">Cliente "Diseño Creativo":</span> Sugerencias para mejorar presentación de propuesta en licitación SERCOTEC.</p>
+                    <span class="text-sm text-gray-500">Enviado: 06/07/2025</span>
+                </div>
+            </div>
+            <button class="mt-6 px-6 py-3 bg-purple-900 text-white font-semibold rounded-xl hover:bg-purple-800 transition duration-300 transform hover:-translate-y-1">Ver Historial Completo de Retroalimentación</button>
+        </div>
+
+    </main>
+
+    <!-- Footer - Adaptado de login.html footer -->
+    <footer class="bg-purple-900 text-white py-10 mt-12">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-lg font-semibold mb-2">&copy; 2025 VanguardIA.</p>
+            <p class="text-sm text-purple-200">Todos los derechos reservados. Tu Pyme, siempre un paso adelante.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Message Box functionality
+            const messageBox = document.getElementById('messageBox');
+            const closeMessageBoxButton = document.getElementById('closeMessageBox');
+            const overlay = document.getElementById('overlay');
+
+            function showMessageBox(message) {
+                messageBox.querySelector('p:nth-child(2)').textContent = message;
+                messageBox.classList.add('show');
+                overlay.classList.add('show');
+            }
+
+            function hideMessageBox() {
+                messageBox.classList.remove('show');
+                overlay.classList.remove('show');
+            }
+
+            closeMessageBoxButton.addEventListener('click', hideMessageBox);
+            overlay.addEventListener('click', hideMessageBox);
+
+            // Logout button functionality
+            const logoutButton = document.getElementById('logout-button');
+            logoutButton.addEventListener('click', () => {
+                showMessageBox('Cerrando sesión...');
+                setTimeout(() => {
+                    window.location.href = 'login.html'; // Redirect back to login page
+                }, 1000);
+            });
+
+            // Button to navigate to Training Content Management
+            const manageTrainingsButton = document.getElementById('manage-trainings-button');
+            manageTrainingsButton.addEventListener('click', () => {
+                showMessageBox('Redirigiendo a la gestión de capacitaciones...');
+                setTimeout(() => {
+                    // This will be the next HTML file we create for CMS internal management
+                    window.location.href = 'cms_training_management.html';
+                }, 1000);
+            });
+
+            // Button to manage Clients and Leads (placeholder for future module)
+            const manageClientsButton = document.getElementById('manage-clients-button');
+            manageClientsButton.addEventListener('click', () => {
+                showMessageBox('Funcionalidad de gestión de clientes y leads en desarrollo.');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -172,7 +172,16 @@
             const username = document.getElementById('internal-username').value;
             const password = document.getElementById('internal-password').value;
             console.log('Intento de inicio de sesión interno:', { username, password });
-            showMessageBox('Inicio de sesión interno simulado para el usuario: ' + username + '. Funcionalidad en desarrollo.');
+
+            // Simulate authentication (replace with actual backend call)
+            if (username === 'admin' && password === 'pass') { // Simple hardcoded check for demonstration
+                showMessageBox('Inicio de sesión exitoso. Redirigiendo al CRM interno...');
+                setTimeout(() => {
+                    window.location.href = 'crm_dashboard.html'; // Redirect to CRM dashboard
+                }, 1500); // Redirect after 1.5 seconds
+            } else {
+                showMessageBox('Credenciales incorrectas para usuario interno.');
+            }
             internalLoginForm.reset();
         });
 
@@ -188,3 +197,5 @@
         });
     });
 </script>
+</body>
+</html>
