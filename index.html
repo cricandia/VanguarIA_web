@@ -345,8 +345,70 @@
         </div>
     </footer>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
+    <script type="module">
+        // Firebase SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // ** TU CONFIGURACIÓN DE FIREBASE DIRECTAMENTE AQUÍ **
+        const firebaseConfig = {
+            apiKey: "AIzaSyD13Edlq57sfSx9yp5WwEJZeZJg16YVaK4",
+            authDomain: "vanguardia-crm-61b25.firebaseapp.com",
+            projectId: "vanguardia-crm-61b25",
+            storageBucket: "vanguardia-crm-61b25.firebasestorage.app",
+            messagingSenderId: "398266882033",
+            appId: "1:398266882033:web:2cfefeec6594f98520d650",
+            measurementId: "G-J6CQEBBT76"
+        };
+        // ** FIN DE TU CONFIGURACIÓN DE FIREBASE **
+
+        // La variable appId para la ruta de Firestore se puede obtener del projectId de firebaseConfig
+        const appId = firebaseConfig.projectId; // Usamos el projectId directamente como appId para la ruta de Firestore
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null; // Mantener para posible autenticación automática de Canvas si se usa
+
+        let db;
+        let auth;
+
+        // Message Box functionality (copied from existing code)
+        const messageBox = document.getElementById('messageBox');
+        const closeMessageBoxButton = document.getElementById('closeMessageBox');
+        const overlay = document.getElementById('overlay');
+
+        function showMessageBox(message) {
+            messageBox.querySelector('p:nth-child(2)').textContent = message;
+            messageBox.classList.add('show');
+            overlay.classList.add('show');
+        }
+
+        function hideMessageBox() {
+            messageBox.classList.remove('show');
+            overlay.classList.remove('show');
+        }
+
+        closeMessageBoxButton.addEventListener('click', hideMessageBox);
+        overlay.addEventListener('click', hideMessageBox);
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Initialize Firebase
+            try {
+                const app = initializeApp(firebaseConfig); // Ahora usa la configuración directa
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                // Sign in to Firebase
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                    console.log('Signed in with custom token.');
+                } else {
+                    await signInAnonymously(auth);
+                    console.log('Signed in anonymously.');
+                }
+            } catch (error) {
+                console.error("Error initializing Firebase or signing in:", error);
+                showMessageBox("Error al inicializar la aplicación. Algunas funcionalidades podrían no estar disponibles.");
+            }
+
             // Mobile Menu functionality
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const closeMobileMenuButton = document.getElementById('close-mobile-menu');
@@ -360,26 +422,7 @@
                 mobileMenu.classList.remove('active');
             });
 
-            // Message Box functionality
-            const messageBox = document.getElementById('messageBox');
-            const closeMessageBoxButton = document.getElementById('closeMessageBox');
-            const overlay = document.getElementById('overlay');
-
-            function showMessageBox(message) {
-                messageBox.querySelector('p:nth-child(2)').textContent = message;
-                messageBox.classList.add('show');
-                overlay.classList.add('show');
-            }
-
-            function hideMessageBox() {
-                messageBox.classList.remove('show');
-                overlay.classList.remove('show');
-            }
-
-            closeMessageBoxButton.addEventListener('click', hideMessageBox);
-            overlay.addEventListener('click', hideMessageBox); // Close when clicking outside message box
-
-            // MODIFICACIÓN: Redireccionar a login.html al hacer clic en el botón de Iniciar Sesión
+            // Redireccionar a login.html al hacer clic en el botón de Iniciar Sesión
             const loginButton = document.getElementById('login-button');
             const mobileLoginButton = document.getElementById('mobile-login-button');
 
@@ -392,43 +435,38 @@
                 window.location.href = 'login.html';
             });
 
-            // Contact Form Submission (simulated backend connection)
+            // Contact Form Submission (Firestore connection)
             const contactForm = document.getElementById('contact-form');
             contactForm.addEventListener('submit', async function(e) {
                 e.preventDefault(); // Prevent default form submission
+
+                if (!db) {
+                    showMessageBox('La base de datos no está inicializada. Inténtalo de nuevo más tarde.');
+                    return;
+                }
 
                 const formData = {
                     name: document.getElementById('name').value,
                     email: document.getElementById('email').value,
                     phone: document.getElementById('phone').value,
                     query_type: document.getElementById('query-type').value,
-                    message: document.getElementById('message').value
+                    message: document.getElementById('message').value,
+                    timestamp: new Date(), // Add a timestamp for when the lead was created
+                    status: 'New' // Initial status for a new lead
                 };
 
                 showMessageBox('Enviando tu consulta...'); // Show loading message
 
                 try {
-                    // Simulate API call to backend
-                    const response = await fetch('YOUR_BACKEND_API_ENDPOINT/leads', { // Replace with your actual backend endpoint
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(formData),
-                    });
-
-                    if (response.ok) {
-                        // Simulate successful response
-                        showMessageBox('¡Consulta enviada con éxito! Nos pondremos en contacto contigo pronto.');
-                        contactForm.reset(); // Clear the form
-                    } else {
-                        // Simulate error response
-                        const errorData = await response.json();
-                        showMessageBox('Error al enviar la consulta: ' + (errorData.message || 'Inténtalo de nuevo.'));
-                    }
+                    // Add a new document to the 'leads' collection
+                    // Usamos el projectId de firebaseConfig directamente como appId para la ruta de Firestore
+                    const docRef = await addDoc(collection(db, `artifacts/${appId}/public/data/leads`), formData);
+                    console.log("Document written with ID: ", docRef.id);
+                    showMessageBox('¡Consulta enviada con éxito! Nos pondremos en contacto contigo pronto.');
+                    contactForm.reset(); // Clear the form
                 } catch (error) {
-                    console.error('Error:', error);
-                    showMessageBox('Hubo un problema de conexión. Por favor, inténtalo de nuevo más tarde.');
+                    console.error("Error adding document: ", error);
+                    showMessageBox('Error al enviar la consulta: ' + error.message + '. Por favor, inténtalo de nuevo.');
                 }
             });
         });
